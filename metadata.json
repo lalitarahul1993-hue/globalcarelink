@@ -1,0 +1,6 @@
+{
+  "name": "Global Care Link Services LLP",
+  "description": "Premier Healthcare & Emergency Facilitation Portal for Global Care Link Services LLP. Digital Health Card, 12 MOU Partner Services, and Card Verification.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
