@@ -33,6 +33,7 @@ export interface OfficialCardData {
   photoUrl?: string | null;
   agentId?: string;
   referredByAgentId?: string;
+  approvalStatus?: 'PENDING' | 'APPROVED' | 'DECLINED';
 }
 
 interface OfficialCompanyCardProps {
@@ -56,7 +57,8 @@ export const OfficialCompanyCard: React.FC<OfficialCompanyCardProps> = ({
     validity = '04/10/2027',
     photoUrl = null,
     agentId = 'gcl001',
-    referredByAgentId
+    referredByAgentId,
+    approvalStatus = 'APPROVED'
   } = data;
   const displayAgentId = referredByAgentId || agentId || 'gcl001';
 
@@ -195,6 +197,23 @@ export const OfficialCompanyCard: React.FC<OfficialCompanyCardProps> = ({
                 <span className="text-[#f3c64a] font-mono font-bold border-b border-[#d4af37]/40 flex-1 truncate pb-0.5">
                   {validity || '04/10/2027'}
                 </span>
+              </div>
+              <div className="flex items-center pt-0.5">
+                <span className="text-slate-300 font-semibold w-20 sm:w-28 shrink-0">Status:</span>
+                {approvalStatus === 'PENDING' ? (
+                  <span className="text-amber-300 font-mono font-bold text-[7px] sm:text-[9px] bg-amber-950/80 px-1.5 py-0.5 rounded border border-amber-400/50 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                    <span>UNDER ADMIN REVIEW</span>
+                  </span>
+                ) : approvalStatus === 'DECLINED' ? (
+                  <span className="text-rose-300 font-mono font-bold text-[7px] sm:text-[9px] bg-rose-950/80 px-1.5 py-0.5 rounded border border-rose-400/50">
+                    ✕ DECLINED
+                  </span>
+                ) : (
+                  <span className="text-emerald-300 font-mono font-bold text-[7px] sm:text-[9px] bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-400/40">
+                    ✓ APPROVED &amp; ACTIVE
+                  </span>
+                )}
               </div>
             </div>
           </div>

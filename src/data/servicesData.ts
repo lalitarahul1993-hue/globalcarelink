@@ -236,6 +236,7 @@ export const MOCK_MEMBERS: MemberRecord[] = [
     issueDate: '05/10/2026',
     validTill: '04/10/2027',
     status: 'ACTIVE',
+    approvalStatus: 'APPROVED',
     jurisdiction: 'Delhi Only',
     tier: 'All 12 MOU Facilitation Services Active'
   },
@@ -249,6 +250,7 @@ export const MOCK_MEMBERS: MemberRecord[] = [
     issueDate: '06/10/2026',
     validTill: '05/10/2027',
     status: 'ACTIVE',
+    approvalStatus: 'APPROVED',
     jurisdiction: 'Delhi Only',
     tier: 'All 12 MOU Facilitation Services Active'
   },
@@ -262,6 +264,7 @@ export const MOCK_MEMBERS: MemberRecord[] = [
     issueDate: '07/10/2026',
     validTill: '06/10/2027',
     status: 'ACTIVE',
+    approvalStatus: 'APPROVED',
     jurisdiction: 'Delhi Only',
     tier: 'All 12 MOU Facilitation Services Active'
   }

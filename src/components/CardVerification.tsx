@@ -145,17 +145,23 @@ export const CardVerification: React.FC<CardVerificationProps> = ({
                         <div className="flex items-center gap-1.5">
                           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                           <span className="text-xs font-bold text-emerald-800 tracking-wider uppercase">
-                            AUTHENTICATION SUCCESSFUL
+                            AUTHENTICATION RECORD FOUND
                           </span>
                         </div>
                         <h4 className="text-base font-extrabold text-slate-900">
-                          Active & Verified Healthcare Card
+                          {verifiedRecord.approvalStatus === 'PENDING' ? 'Card Generated (Under Admin Review)' : 'Active & Verified Healthcare Card'}
                         </h4>
                       </div>
                     </div>
                     
-                    <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md border border-emerald-300 uppercase">
-                      {verifiedRecord.status}
+                    <span className={`px-3 py-1 text-xs font-bold rounded-md uppercase border ${
+                      verifiedRecord.approvalStatus === 'PENDING'
+                        ? 'bg-amber-100 text-amber-900 border-amber-300'
+                        : verifiedRecord.approvalStatus === 'DECLINED'
+                        ? 'bg-rose-100 text-rose-800 border-rose-300'
+                        : 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                    }`}>
+                      {verifiedRecord.approvalStatus === 'PENDING' ? '⏳ UNDER REVIEW' : verifiedRecord.approvalStatus === 'DECLINED' ? '✕ DECLINED' : '✓ ' + verifiedRecord.status}
                     </span>
                   </div>
 
@@ -211,7 +217,10 @@ export const CardVerification: React.FC<CardVerificationProps> = ({
                         customerName: verifiedRecord.fullName,
                         customerMobile: verifiedRecord.mobile,
                         dateOfIssue: verifiedRecord.issueDate,
-                        validity: verifiedRecord.validTill
+                        validity: verifiedRecord.validTill,
+                        agentId: verifiedRecord.referredByAgentId || 'gcl001',
+                        photoUrl: verifiedRecord.photoUrl,
+                        approvalStatus: verifiedRecord.approvalStatus || 'APPROVED'
                       }}
                     />
                   </div>

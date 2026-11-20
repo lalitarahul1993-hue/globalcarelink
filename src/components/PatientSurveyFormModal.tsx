@@ -238,6 +238,7 @@ export const PatientSurveyFormModal: React.FC<PatientSurveyFormModalProps> = ({
         issueDate: issueDateStr,
         validTill: validTillStr,
         status: 'ACTIVE',
+        approvalStatus: 'PENDING',
         jurisdiction: 'Delhi Only',
         tier: 'All 12 MOU Facilitation Services Active',
         photoUrl: formData.photoUrl,

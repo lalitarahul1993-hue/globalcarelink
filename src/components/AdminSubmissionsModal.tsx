@@ -30,19 +30,28 @@ import {
   Check,
   RefreshCw,
   Plus,
-  DollarSign
+  DollarSign,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertTriangle,
+  FileCheck2,
+  FileX2
 } from 'lucide-react';
 import { MemberRecord, AgentRecord, ActivityLogItem, ActivityType } from '../types';
 import { COMPANY_CREDENTIALS } from '../data/servicesData';
 import { 
   exportSubmissionsToCSV, 
   deleteSubmission,
-  getStoredAgents,
-  saveAgent,
-  generateNextAgentId,
-  exportAgentsToCSV,
-  getStoredActivities,
-  exportActivitiesToCSV
+  getStoredAgents, 
+  saveAgent, 
+  generateNextAgentId, 
+  exportAgentsToCSV, 
+  getStoredActivities, 
+  exportActivitiesToCSV,
+  approveCardSubmission,
+  declineCardSubmission,
+  getStoredSubmissions
 } from '../utils/storage';
 import { CompanyLogo } from './CompanyLogo';
 import { OfficialCompanyCard } from './OfficialCompanyCard';
@@ -79,6 +88,10 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRecord, setSelectedRecord] = useState<MemberRecord | null>(null);
   const [activeView, setActiveView] = useState<'list' | 'surveyDoc' | 'cardView'>('list');
+  const [approvalFilter, setApprovalFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'DECLINED'>('ALL');
+  const [declinePromptCard, setDeclinePromptCard] = useState<MemberRecord | null>(null);
+  const [declineReasonInput, setDeclineReasonInput] = useState('');
+  const [actionSuccessMessage, setActionSuccessMessage] = useState<string | null>(null);
 
   // Agents Tab States
   const [agents, setAgents] = useState<AgentRecord[]>([]);
@@ -148,11 +161,16 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
 
   if (!isOpen) return null;
 
+  // Approval Counts
+  const pendingCount = submissions.filter(s => (s.approvalStatus || 'PENDING') === 'PENDING').length;
+  const approvedCount = submissions.filter(s => s.approvalStatus === 'APPROVED').length;
+  const declinedCount = submissions.filter(s => s.approvalStatus === 'DECLINED').length;
+
   // Filter Submissions
   const filteredSubmissions = submissions.filter(s => {
     const term = searchTerm.toLowerCase();
     const survey = s.surveyData;
-    return (
+    const matchesSearch = (
       s.fullName.toLowerCase().includes(term) ||
       s.mobile.includes(term) ||
       s.cardNumber.toLowerCase().includes(term) ||
@@ -160,6 +178,11 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
       (survey?.aadhaarNo && survey.aadhaarNo.includes(term)) ||
       (survey?.fatherOrHusbandName && survey.fatherOrHusbandName.toLowerCase().includes(term))
     );
+
+    if (!matchesSearch) return false;
+    const status = s.approvalStatus || 'PENDING';
+    if (approvalFilter === 'ALL') return true;
+    return status === approvalFilter;
   });
 
   // Filter Agents
@@ -179,6 +202,44 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
     if (activityFilter === 'ALL') return true;
     return act.type === activityFilter;
   });
+
+  const handleApproveSubmission = (record: MemberRecord) => {
+    approveCardSubmission(record.cardNumber, 'Approved by Admin');
+    onRefresh();
+    setAgents(getStoredAgents());
+    setActivities(getStoredActivities());
+    if (selectedRecord?.cardNumber === record.cardNumber) {
+      setSelectedRecord(prev => prev ? { ...prev, approvalStatus: 'APPROVED', approvedAt: new Date().toISOString() } : null);
+    }
+    const agentMsg = record.referredByAgentId 
+      ? ` और एजेंट ${record.referredByAgentId} को ₹200 कमीशन क्रेडिट कर दिया गया है!` 
+      : '!';
+    setActionSuccessMessage(`✓ कार्ड ${record.cardNumber} (${record.fullName}) स्वीकृत (Approved) किया गया${agentMsg}`);
+    setTimeout(() => setActionSuccessMessage(null), 4500);
+  };
+
+  const handleOpenDeclinePrompt = (record: MemberRecord) => {
+    setDeclinePromptCard(record);
+    setDeclineReasonInput('Payment verification pending or invalid details');
+  };
+
+  const handleConfirmDecline = () => {
+    if (!declinePromptCard) return;
+    declineCardSubmission(declinePromptCard.cardNumber, declineReasonInput || 'Declined by Admin');
+    onRefresh();
+    setAgents(getStoredAgents());
+    setActivities(getStoredActivities());
+    if (selectedRecord?.cardNumber === declinePromptCard.cardNumber) {
+      setSelectedRecord(prev => prev ? { ...prev, approvalStatus: 'DECLINED', declineReason: declineReasonInput } : null);
+    }
+    const agentMsg = declinePromptCard.referredByAgentId 
+      ? ` (एजेंट ${declinePromptCard.referredByAgentId} का कमीशन रोक दिया गया)` 
+      : '';
+    setActionSuccessMessage(`✕ कार्ड ${declinePromptCard.cardNumber} अस्वीकृत (Declined) किया गया${agentMsg}`);
+    setTimeout(() => setActionSuccessMessage(null), 4500);
+    setDeclinePromptCard(null);
+    setDeclineReasonInput('');
+  };
 
   const handleDeleteSubmission = (cardNum: string, name: string) => {
     if (window.confirm(`Are you sure you want to delete application for ${name} (${cardNum})?`)) {
@@ -566,21 +627,115 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
               {activeView === 'list' && (
                 <div className="space-y-4">
                   
-                  {/* Search Bar & Stats */}
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200">
-                    <div className="relative w-full sm:w-96">
-                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                      <input
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search by Name, Phone, Aadhaar, Card No, Agent ID..."
-                        className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-amber-400"
-                      />
+                  {/* Action Success Alert */}
+                  {actionSuccessMessage && (
+                    <div className="p-3.5 bg-emerald-50 border border-emerald-400 rounded-2xl text-xs font-bold text-emerald-900 flex items-center gap-2 shadow-xs animate-in fade-in duration-200">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>{actionSuccessMessage}</span>
+                    </div>
+                  )}
+
+                  {/* Pending Approvals Notice Banner */}
+                  {pendingCount > 0 && (
+                    <div className="p-4 bg-gradient-to-r from-amber-50 via-amber-100/60 to-amber-50 border-2 border-amber-400/80 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-xs">
+                          <Clock className="w-5 h-5 text-slate-950" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                            <span>{pendingCount} नए कार्ड एडमिन अप्रूवल के लिए पेंडिंग हैं!</span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950">Action Needed</span>
+                          </h4>
+                          <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                            जब तक आप कार्ड <strong>Approve (स्वीकार)</strong> नहीं करेंगे, तब तक एजेंट को उसका ₹200 कमीशन क्रेडिट नहीं होगा।
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => setApprovalFilter('PENDING')}
+                          className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-colors cursor-pointer ${
+                            approvalFilter === 'PENDING'
+                              ? 'bg-[#071933] text-amber-400 shadow-xs'
+                              : 'bg-amber-400 hover:bg-amber-300 text-slate-950'
+                          }`}
+                        >
+                          केवल पेंडिंग कार्ड्स देखें ({pendingCount})
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Search Bar & Approval Status Filter Pills */}
+                  <div className="flex flex-col gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                      <div className="relative w-full sm:w-96">
+                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                        <input
+                          type="text"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          placeholder="Search by Name, Phone, Aadhaar, Card No, Agent ID..."
+                          className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-amber-400"
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                        <span>Showing {filteredSubmissions.length} of {submissions.length} Applications</span>
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                      <span>Showing {filteredSubmissions.length} of {submissions.length} Applications</span>
+                    {/* Filter Tabs for Approval Status */}
+                    <div className="pt-2 border-t border-slate-100 flex items-center gap-2 flex-wrap">
+                      <span className="text-[11px] font-bold text-slate-500">स्थिति अनुसार फ़िल्टर:</span>
+                      
+                      <button
+                        onClick={() => setApprovalFilter('ALL')}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                          approvalFilter === 'ALL'
+                            ? 'bg-[#071933] text-white shadow-xs'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
+                      >
+                        सभी आवेदन ({submissions.length})
+                      </button>
+
+                      <button
+                        onClick={() => setApprovalFilter('PENDING')}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
+                          approvalFilter === 'PENDING'
+                            ? 'bg-amber-500 text-slate-950 shadow-xs font-black'
+                            : 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
+                        }`}
+                      >
+                        <Clock className="w-3.5 h-3.5" />
+                        <span>⏳ पेंडिंग अप्रूवल ({pendingCount})</span>
+                      </button>
+
+                      <button
+                        onClick={() => setApprovalFilter('APPROVED')}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
+                          approvalFilter === 'APPROVED'
+                            ? 'bg-emerald-600 text-white shadow-xs'
+                            : 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100'
+                        }`}
+                      >
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        <span>✅ स्वीकृत / Approved ({approvedCount})</span>
+                      </button>
+
+                      <button
+                        onClick={() => setApprovalFilter('DECLINED')}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
+                          approvalFilter === 'DECLINED'
+                            ? 'bg-rose-600 text-white shadow-xs'
+                            : 'bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100'
+                        }`}
+                      >
+                        <XCircle className="w-3.5 h-3.5" />
+                        <span>❌ अस्वीकृत / Declined ({declinedCount})</span>
+                      </button>
                     </div>
                   </div>
 
@@ -596,7 +751,7 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
                             <th className="py-3 px-4">Aadhaar / DOB</th>
                             <th className="py-3 px-4">Referred By</th>
                             <th className="py-3 px-4">Payment</th>
-                            <th className="py-3 px-4">Medical Flags</th>
+                            <th className="py-3 px-4">Approval &amp; Commission</th>
                             <th className="py-3 px-4 text-right">Actions</th>
                           </tr>
                         </thead>
@@ -604,20 +759,13 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
                           {filteredSubmissions.length === 0 ? (
                             <tr>
                               <td colSpan={8} className="py-8 text-center text-slate-400">
-                                No applications match your search query.
+                                कोई आवेदन नहीं मिला (No applications match the selected filter).
                               </td>
                             </tr>
                           ) : (
                             filteredSubmissions.map((record) => {
                               const s = record.surveyData;
-                              const medFlags = [
-                                s?.gallbladderStones ? 'Gallbladder' : null,
-                                s?.kidneyStones ? 'Kidney Stones' : null,
-                                s?.hernia ? 'Hernia' : null,
-                                s?.pilesFistula ? 'Piles' : null,
-                                s?.rasoliFibroid ? 'Fibroid' : null,
-                                s?.otherCriticalIllness ? 'Critical' : null
-                              ].filter(Boolean);
+                              const status = record.approvalStatus || 'PENDING';
 
                               return (
                                 <tr key={record.cardNumber} className="hover:bg-amber-50/40 transition-colors">
@@ -649,19 +797,86 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
                                       ₹599 PAID
                                     </span>
                                   </td>
+                                  
+                                  {/* Approval & Commission Column */}
                                   <td className="py-3 px-4">
-                                    {medFlags.length > 0 ? (
-                                      <div className="flex flex-wrap gap-1">
-                                        {medFlags.map(f => (
-                                          <span key={f} className="px-1.5 py-0.5 bg-rose-50 text-rose-700 border border-rose-200 rounded text-[9px] font-semibold">
-                                            {f}
+                                    {status === 'PENDING' && (
+                                      <div className="space-y-1.5">
+                                        <div className="flex items-center gap-1.5">
+                                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                                            <Clock className="w-3 h-3 text-amber-600 animate-pulse" />
+                                            <span>Pending Review</span>
                                           </span>
-                                        ))}
+                                        </div>
+                                        {record.referredByAgentId && (
+                                          <div className="text-[10px] text-amber-700 font-semibold">
+                                            Agent Commission: <span className="underline">On Hold</span>
+                                          </div>
+                                        )}
+                                        <div className="flex items-center gap-1.5 pt-0.5">
+                                          <button
+                                            onClick={() => handleApproveSubmission(record)}
+                                            className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] rounded-lg shadow-2xs flex items-center gap-1 cursor-pointer transition-colors"
+                                            title="Approve card and release agent commission"
+                                          >
+                                            <Check className="w-3.5 h-3.5 stroke-[3]" />
+                                            <span>Approve (स्वीकारें)</span>
+                                          </button>
+                                          <button
+                                            onClick={() => handleOpenDeclinePrompt(record)}
+                                            className="px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-800 font-semibold text-[11px] rounded-lg border border-rose-300 flex items-center gap-1 cursor-pointer transition-colors"
+                                            title="Decline card"
+                                          >
+                                            <X className="w-3.5 h-3.5" />
+                                            <span>Decline</span>
+                                          </button>
+                                        </div>
                                       </div>
-                                    ) : (
-                                      <span className="text-slate-400 text-[11px]">None Reported</span>
+                                    )}
+
+                                    {status === 'APPROVED' && (
+                                      <div className="space-y-1">
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                          <CheckCircle className="w-3 h-3 text-emerald-600" />
+                                          <span>Approved &amp; Active</span>
+                                        </span>
+                                        {record.referredByAgentId ? (
+                                          <div className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
+                                            <span>✓ ₹200 Released to {record.referredByAgentId}</span>
+                                          </div>
+                                        ) : (
+                                          <div className="text-[10px] text-slate-400">Direct User (No Agent)</div>
+                                        )}
+                                        <button
+                                          onClick={() => handleOpenDeclinePrompt(record)}
+                                          className="text-[10px] text-slate-400 hover:text-rose-600 underline block cursor-pointer"
+                                        >
+                                          Revoke / Decline
+                                        </button>
+                                      </div>
+                                    )}
+
+                                    {status === 'DECLINED' && (
+                                      <div className="space-y-1">
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                                          <XCircle className="w-3 h-3 text-rose-600" />
+                                          <span>Declined (अस्वीकृत)</span>
+                                        </span>
+                                        {record.declineReason && (
+                                          <div className="text-[10px] text-rose-600 font-medium truncate max-w-[140px]" title={record.declineReason}>
+                                            {record.declineReason}
+                                          </div>
+                                        )}
+                                        <button
+                                          onClick={() => handleApproveSubmission(record)}
+                                          className="text-[10px] text-emerald-700 hover:text-emerald-800 underline font-bold block cursor-pointer"
+                                        >
+                                          Re-Approve (स्वीकारें)
+                                        </button>
+                                      </div>
                                     )}
                                   </td>
+
                                   <td className="py-3 px-4 text-right">
                                     <div className="flex items-center justify-end gap-1.5">
                                       <button
@@ -727,9 +942,60 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
                       </button>
                       <button
                         onClick={() => setActiveView('list')}
-                        className="px-3 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-200"
+                        className="px-3 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-200 cursor-pointer"
                       >
                         Back to List
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Admin Approval Decision Bar for Selected Customer */}
+                  <div className="bg-white p-4 rounded-2xl border-2 border-amber-300 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${
+                        (selectedRecord.approvalStatus || 'PENDING') === 'APPROVED'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                          : selectedRecord.approvalStatus === 'DECLINED'
+                          ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                          : 'bg-amber-100 text-amber-900 border border-amber-300'
+                      }`}>
+                        {(selectedRecord.approvalStatus || 'PENDING') === 'APPROVED' ? <Check className="w-5 h-5 text-emerald-700 stroke-[3]" /> : selectedRecord.approvalStatus === 'DECLINED' ? <X className="w-5 h-5 text-rose-700 stroke-[3]" /> : <Clock className="w-5 h-5 text-amber-700" />}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-slate-700">Approval Status:</span>
+                          <span className={`px-2 py-0.5 rounded text-[11px] font-black uppercase ${
+                            (selectedRecord.approvalStatus || 'PENDING') === 'APPROVED'
+                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                              : selectedRecord.approvalStatus === 'DECLINED'
+                              ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                              : 'bg-amber-100 text-amber-900 border border-amber-200'
+                          }`}>
+                            {selectedRecord.approvalStatus || 'PENDING'}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          {selectedRecord.referredByAgentId 
+                            ? `Referred by: ${selectedRecord.referredByAgentId} · Agent Commission: ₹200 ${(selectedRecord.approvalStatus === 'APPROVED' ? '(Credited ✓)' : '(On Hold)')}` 
+                            : 'Direct enrollment (No Agent Commission)'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleApproveSubmission(selectedRecord)}
+                        className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+                      >
+                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        <span>Approve Application (स्वीकारें)</span>
+                      </button>
+                      <button
+                        onClick={() => handleOpenDeclinePrompt(selectedRecord)}
+                        className="px-3.5 py-2 bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold text-xs rounded-xl border border-rose-300 flex items-center gap-1.5 cursor-pointer transition-colors"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                        <span>Decline (अस्वीकारें)</span>
                       </button>
                     </div>
                   </div>
@@ -906,9 +1172,49 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
                       </button>
                       <button
                         onClick={() => setActiveView('list')}
-                        className="px-3 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-200"
+                        className="px-3 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-200 cursor-pointer"
                       >
                         Back to List
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Decision Bar in Card View */}
+                  <div className="bg-white p-4 rounded-2xl border-2 border-amber-300 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs ${
+                        (selectedRecord.approvalStatus || 'PENDING') === 'APPROVED'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : selectedRecord.approvalStatus === 'DECLINED'
+                          ? 'bg-rose-100 text-rose-800'
+                          : 'bg-amber-100 text-amber-900'
+                      }`}>
+                        {(selectedRecord.approvalStatus || 'PENDING') === 'APPROVED' ? '✓' : selectedRecord.approvalStatus === 'DECLINED' ? '✕' : '⏳'}
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-slate-800 block">
+                          Status: {selectedRecord.approvalStatus || 'PENDING'}
+                        </span>
+                        <span className="text-[11px] text-slate-500">
+                          {selectedRecord.referredByAgentId ? `Referred by: ${selectedRecord.referredByAgentId} · Commission: ₹200` : 'Direct customer'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleApproveSubmission(selectedRecord)}
+                        className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1 cursor-pointer"
+                      >
+                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        <span>Approve</span>
+                      </button>
+                      <button
+                        onClick={() => handleOpenDeclinePrompt(selectedRecord)}
+                        className="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold text-xs rounded-xl border border-rose-300 flex items-center gap-1 cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                        <span>Decline</span>
                       </button>
                     </div>
                   </div>
@@ -922,7 +1228,8 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
                         dateOfIssue: selectedRecord.issueDate,
                         validity: selectedRecord.validTill,
                         photoUrl: selectedRecord.photoUrl,
-                        agentId: selectedRecord.referredByAgentId || selectedRecord.surveyData?.referredByAgentId || 'gcl001'
+                        agentId: selectedRecord.referredByAgentId || selectedRecord.surveyData?.referredByAgentId || 'gcl001',
+                        approvalStatus: selectedRecord.approvalStatus || 'PENDING'
                       }}
                     />
                   </div>
@@ -1061,8 +1368,9 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
                         <th className="py-3 px-4">Agent Name</th>
                         <th className="py-3 px-4">Contact &amp; Location</th>
                         <th className="py-3 px-4">UPI for Payout</th>
-                        <th className="py-3 px-4 text-center">Cards Referred</th>
-                        <th className="py-3 px-4 text-center">Earnings (₹)</th>
+                        <th className="py-3 px-4 text-center">Referrals (Approved / Pending)</th>
+                        <th className="py-3 px-4 text-center">Confirmed Commission</th>
+                        <th className="py-3 px-4 text-center">On Hold (Pending)</th>
                         <th className="py-3 px-4 text-center">Payout Status</th>
                         <th className="py-3 px-4 text-right">Action</th>
                       </tr>
@@ -1070,7 +1378,7 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
                     <tbody className="divide-y divide-slate-100">
                       {filteredAgents.length === 0 ? (
                         <tr>
-                          <td colSpan={8} className="py-8 text-center text-slate-400">
+                          <td colSpan={9} className="py-8 text-center text-slate-400">
                             No agents found matching your query.
                           </td>
                         </tr>
@@ -1094,16 +1402,33 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
                               {agent.upiId}
                             </td>
                             <td className="py-3 px-4 text-center">
-                              <span className="font-bold text-slate-900 text-sm">
-                                {agent.totalReferrals || 0}
-                              </span>
-                              <span className="text-[10px] text-slate-400 block">Cards</span>
+                              <div className="flex flex-col items-center">
+                                <span className="font-extrabold text-emerald-700 text-xs">
+                                  {agent.approvedReferrals || 0} Approved
+                                </span>
+                                {(agent.pendingReferrals || 0) > 0 && (
+                                  <span className="text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 mt-0.5">
+                                    {agent.pendingReferrals} Pending
+                                  </span>
+                                )}
+                                <span className="text-[10px] text-slate-400 mt-0.5">
+                                  Total: {agent.totalReferrals || 0}
+                                </span>
+                              </div>
                             </td>
                             <td className="py-3 px-4 text-center">
-                              <span className="font-black text-amber-600 text-sm">
+                              <span className="font-black text-emerald-600 text-sm">
                                 ₹{agent.totalEarnings || 0}
                               </span>
-                              <span className="text-[10px] text-slate-400 block">@ Upto ₹200/card</span>
+                              <span className="text-[10px] text-slate-400 block">Released (Approved)</span>
+                            </td>
+                            <td className="py-3 px-4 text-center">
+                              <span className={`font-bold text-xs ${
+                                (agent.pendingCommission || 0) > 0 ? 'text-amber-600' : 'text-slate-400'
+                              }`}>
+                                ₹{agent.pendingCommission || 0}
+                              </span>
+                              <span className="text-[10px] text-slate-400 block">Awaiting Approval</span>
                             </td>
                             <td className="py-3 px-4 text-center">
                               <button
@@ -1327,6 +1652,66 @@ export const AdminSubmissionsModal: React.FC<AdminSubmissionsModalProps> = ({
           )}
 
         </div>
+
+        {/* Decline Application Reason Modal Popup */}
+        {declinePromptCard && (
+          <div className="fixed inset-0 z-60 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl max-w-md w-full p-6 border-2 border-rose-300 shadow-2xl space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                  <X className="w-5 h-5 stroke-[2.5]" />
+                </div>
+                <div>
+                  <h4 className="text-base font-extrabold text-slate-900">
+                    कार्ड अस्वीकृत करें (Decline Application)
+                  </h4>
+                  <p className="text-xs text-slate-500">
+                    Card No: <span className="font-mono font-bold text-slate-800">{declinePromptCard.cardNumber}</span> · {declinePromptCard.fullName}
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 leading-relaxed">
+                ⚠️ <strong>नोट:</strong> कार्ड अस्वीकृत करने पर संबंधित एजेंट (
+                <strong>{declinePromptCard.referredByAgentId || 'N/A'}</strong>) को मिलने वाला ₹200 कमीशन रद्द/होल्ड कर दिया जाएगा।
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  अस्वीकृति का कारण (Reason for Decline) *
+                </label>
+                <textarea
+                  rows={3}
+                  value={declineReasonInput}
+                  onChange={(e) => setDeclineReasonInput(e.target.value)}
+                  placeholder="e.g. Payment not verified / Incorrect Aadhaar details / Duplicate card request..."
+                  className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-rose-500"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeclinePromptCard(null);
+                    setDeclineReasonInput('');
+                  }}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
+                >
+                  रद्द करें (Cancel)
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmDecline}
+                  className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+                >
+                  <X className="w-3.5 h-3.5" />
+                  <span>हाँ, कार्ड अस्वीकृत करें (Confirm Decline)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

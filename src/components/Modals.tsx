@@ -61,6 +61,7 @@ export const ApplyCardModal: React.FC<ApplyCardModalProps> = ({
       issueDate: '10/10/2026',
       validTill: '09/10/2027',
       status: 'ACTIVE',
+      approvalStatus: 'PENDING',
       jurisdiction: 'Delhi Only',
       tier: 'All 12 MOU Facilitation Services Active'
     };

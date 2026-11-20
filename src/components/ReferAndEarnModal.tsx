@@ -19,13 +19,18 @@ import {
   ExternalLink,
   ChevronRight,
   Sparkles,
-  Users
+  Users,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  AlertCircle
 } from 'lucide-react';
-import { AgentRecord } from '../types';
+import { AgentRecord, MemberRecord } from '../types';
 import { 
   getStoredAgents, 
   saveAgent, 
-  generateNextAgentId 
+  generateNextAgentId,
+  getStoredSubmissions 
 } from '../utils/storage';
 import { COMPANY_CREDENTIALS } from '../data/servicesData';
 import { CompanyLogo } from './CompanyLogo';
@@ -65,7 +70,26 @@ export const ReferAndEarnModal: React.FC<ReferAndEarnModalProps> = ({
     if (isOpen) {
       setNextAgentId(generateNextAgentId());
     }
-  }, [isOpen]);
+
+    const handleAgentUpdate = () => {
+      if (currentAgent) {
+        const fresh = getStoredAgents().find(a => a.agentId === currentAgent.agentId);
+        if (fresh) {
+          setCurrentAgent(fresh);
+        }
+      }
+    };
+
+    window.addEventListener('globalcarelink:agent_updated', handleAgentUpdate);
+    window.addEventListener('globalcarelink:new_submission', handleAgentUpdate);
+    window.addEventListener('storage', handleAgentUpdate);
+
+    return () => {
+      window.removeEventListener('globalcarelink:agent_updated', handleAgentUpdate);
+      window.removeEventListener('globalcarelink:new_submission', handleAgentUpdate);
+      window.removeEventListener('storage', handleAgentUpdate);
+    };
+  }, [isOpen, currentAgent]);
 
   if (!isOpen) return null;
 
@@ -465,36 +489,51 @@ export const ReferAndEarnModal: React.FC<ReferAndEarnModalProps> = ({
                     </button>
                   </div>
 
-                  {/* 3 Metric Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-                      <span className="text-xs text-slate-500 font-bold block mb-1">कुल रेफर किए गए कार्ड</span>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-slate-900">{currentAgent.totalReferrals || 0}</span>
+                  {/* Important Commission & Approval Rule Banner */}
+                  <div className="p-4 bg-gradient-to-r from-amber-50 via-amber-100/50 to-amber-50 border border-amber-300 rounded-2xl flex items-start gap-3 shadow-xs">
+                    <AlertCircle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+                    <div className="text-xs text-amber-950 leading-relaxed">
+                      <strong className="font-extrabold text-amber-900 block mb-0.5">
+                        एजेंट कमीशन नीति (Admin Verification &amp; Approval Rule):
+                      </strong>
+                      जब कोई ग्राहक आपके रेफरल लिंक से कार्ड बनवाता है, तो कार्ड तुरंत बन जाता है तथा एडमिन के पास वेरिफिकेशन हेतु जाता है। एडमिन द्वारा कार्ड <strong>Approve (स्वीकार)</strong> किए जाने पर ही आपका <strong>Upto ₹200 कमीशन</strong> 'कन्फर्म कमाई' में जुड़ेगा। यदि अप्रूवल पेंडिंग है तो कमीशन 'होल्ड पर' दिखेगा।
+                    </div>
+                  </div>
+
+                  {/* 4 Metric Cards */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
+                      <span className="text-[11px] text-slate-500 font-bold block mb-1">कुल रेफरल</span>
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-2xl sm:text-3xl font-black text-slate-900">{currentAgent.totalReferrals || 0}</span>
+                        <span className="text-xs text-slate-500 font-bold">Cards</span>
+                      </div>
+                      <span className="text-[10px] text-slate-400 mt-1 block">कुल आवेदन</span>
+                    </div>
+
+                    <div className="bg-white p-4 sm:p-5 rounded-2xl border border-emerald-200 shadow-xs bg-emerald-50/30">
+                      <span className="text-[11px] text-emerald-800 font-bold block mb-1">स्वीकृत (Approved)</span>
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-2xl sm:text-3xl font-black text-emerald-700">{currentAgent.approvedReferrals || 0}</span>
                         <span className="text-xs text-emerald-600 font-bold">Cards</span>
                       </div>
-                      <span className="text-[11px] text-slate-400 mt-1 block">सक्रिय ग्राहक कार्ड्स</span>
+                      <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">एडमिन द्वारा स्वीकृत</span>
                     </div>
 
-                    <div className="bg-white p-5 rounded-2xl border border-amber-300 shadow-xs bg-gradient-to-br from-white to-amber-50/50">
-                      <span className="text-xs text-amber-800 font-bold block mb-1">कुल कमीशन कमाई (₹)</span>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-amber-600">₹{currentAgent.totalEarnings || 0}</span>
-                        <span className="text-xs text-amber-700 font-bold">INR</span>
+                    <div className="bg-white p-4 sm:p-5 rounded-2xl border border-amber-300 shadow-xs bg-gradient-to-br from-white to-amber-50">
+                      <span className="text-[11px] text-amber-900 font-bold block mb-1">कन्फर्म कमाई (₹)</span>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-2xl sm:text-3xl font-black text-amber-600">₹{currentAgent.totalEarnings || 0}</span>
                       </div>
-                      <span className="text-[11px] text-slate-500 mt-1 block">Upto ₹{currentAgent.commissionPerCard || 200} / कार्ड की दर से</span>
+                      <span className="text-[10px] text-emerald-700 font-bold mt-1 block">Released / विथड्रावेबल</span>
                     </div>
 
-                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-                      <span className="text-xs text-slate-500 font-bold block mb-1">भुगतान स्थिति (Payout)</span>
-                      <div className="flex items-baseline gap-2">
-                        <span className={`text-xl font-black ${currentAgent.payoutStatus === 'PAID' ? 'text-emerald-600' : 'text-amber-600'}`}>
-                          {currentAgent.payoutStatus === 'PAID' ? '✓ PAID' : 'PENDING'}
-                        </span>
+                    <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
+                      <span className="text-[11px] text-slate-600 font-bold block mb-1">होल्ड पर कमीशन</span>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-2xl sm:text-3xl font-black text-amber-600">₹{currentAgent.pendingCommission || 0}</span>
                       </div>
-                      <span className="text-[11px] text-slate-400 mt-1 block font-mono truncate">
-                        UPI: {currentAgent.upiId}
-                      </span>
+                      <span className="text-[10px] text-amber-700 mt-1 block font-semibold">⏳ पेंडिंग अप्रूवल</span>
                     </div>
                   </div>
 
@@ -536,11 +575,11 @@ export const ReferAndEarnModal: React.FC<ReferAndEarnModalProps> = ({
                     </div>
                   </div>
 
-                  {/* Referred Cards List */}
+                  {/* Referred Cards List with Live Verification / Approval Status */}
                   <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
                     <h4 className="text-sm font-extrabold text-slate-900 mb-3 flex items-center justify-between">
                       <span>आपके द्वारा रेफर किए गए कार्ड्स ({currentAgent.referredCards?.length || 0})</span>
-                      <span className="text-xs font-normal text-slate-500">प्रत्येक कार्ड = Upto ₹200</span>
+                      <span className="text-xs font-normal text-slate-500">प्रत्येक स्वीकृत कार्ड = Upto ₹200</span>
                     </h4>
 
                     {(!currentAgent.referredCards || currentAgent.referredCards.length === 0) ? (
@@ -549,23 +588,75 @@ export const ReferAndEarnModal: React.FC<ReferAndEarnModalProps> = ({
                       </div>
                     ) : (
                       <div className="divide-y divide-slate-100 text-xs">
-                        {currentAgent.referredCards.map((cardNo, idx) => (
-                          <div key={cardNo} className="py-2.5 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-[10px]">
-                                {idx + 1}
-                              </span>
-                              <strong className="font-mono text-slate-800">{cardNo}</strong>
-                              <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-semibold">
-                                Card Active
-                              </span>
-                            </div>
-                            <div className="text-right">
-                              <span className="font-bold text-emerald-600">+Upto ₹200</span>
-                              <span className="text-[10px] text-slate-400 block">Earned</span>
-                            </div>
-                          </div>
-                        ))}
+                        {(() => {
+                          const allSubs = getStoredSubmissions();
+                          return currentAgent.referredCards.map((cardNo, idx) => {
+                            const sub = allSubs.find(s => s.cardNumber === cardNo);
+                            const status = sub?.approvalStatus || 'PENDING';
+                            const applicantName = sub?.fullName || '';
+
+                            return (
+                              <div key={cardNo} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div className="flex items-center gap-2.5">
+                                  <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-[10px] shrink-0">
+                                    {idx + 1}
+                                  </span>
+                                  <div>
+                                    <div className="flex items-center gap-2">
+                                      <strong className="font-mono text-slate-900 text-xs">{cardNo}</strong>
+                                      {applicantName && (
+                                        <span className="text-slate-600 font-medium text-xs">· {applicantName}</span>
+                                      )}
+                                    </div>
+
+                                    {/* Status Pill */}
+                                    <div className="mt-1 flex items-center gap-1.5">
+                                      {status === 'APPROVED' && (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-bold border border-emerald-300">
+                                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                          <span>Approved by Admin (स्वीकृत)</span>
+                                        </span>
+                                      )}
+                                      {status === 'PENDING' && (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] bg-amber-100 text-amber-900 font-bold border border-amber-300">
+                                          <Clock className="w-3 h-3 text-amber-600 animate-pulse" />
+                                          <span>Admin Verification Pending (प्रतीक्षारत)</span>
+                                        </span>
+                                      )}
+                                      {status === 'DECLINED' && (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] bg-rose-100 text-rose-800 font-bold border border-rose-300">
+                                          <XCircle className="w-3 h-3 text-rose-600" />
+                                          <span>Declined by Admin (अस्वीकृत)</span>
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="text-left sm:text-right pl-8 sm:pl-0">
+                                  {status === 'APPROVED' && (
+                                    <>
+                                      <span className="font-black text-emerald-600 text-sm block">+₹200 Credited</span>
+                                      <span className="text-[10px] text-emerald-700 font-semibold">कमाई में जुड़ गया ✓</span>
+                                    </>
+                                  )}
+                                  {status === 'PENDING' && (
+                                    <>
+                                      <span className="font-bold text-amber-600 text-xs block">₹200 On Hold</span>
+                                      <span className="text-[10px] text-slate-400">अप्रूवल के बाद क्रेडिट होगा</span>
+                                    </>
+                                  )}
+                                  {status === 'DECLINED' && (
+                                    <>
+                                      <span className="font-semibold text-rose-600 text-xs block">₹0 Not Credited</span>
+                                      <span className="text-[10px] text-slate-400">कार्ड अस्वीकृत</span>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          });
+                        })()}
                       </div>
                     )}
                   </div>
