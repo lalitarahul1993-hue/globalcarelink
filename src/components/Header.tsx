@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  Menu, 
-  X, 
-  CreditCard, 
+import {
+  Menu,
+  X,
+  CreditCard,
   Share2,
-  Lock,
-  ChevronDown
+  Lock
 } from 'lucide-react';
 import { CompanyLogo } from './CompanyLogo';
 
@@ -18,12 +17,11 @@ interface HeaderProps {
   activeSection: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({ 
-  onOpenApplyModal, 
+export const Header: React.FC<HeaderProps> = ({
+  onOpenApplyModal,
   onOpenAdminModal,
   onOpenReferModal,
-  submissionCount = 0,
-  activeSection 
+  submissionCount = 0
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -38,84 +36,79 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-[#06162d]/98 backdrop-blur-md border-b-2 border-amber-500/30 text-white shadow-2xl">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-2.5">
-        
-        {/* ================= DESKTOP & TABLET: TRUE 3-ZONE GRID (LEFT | CENTER | RIGHT) ================= */}
-        <div className="hidden md:grid grid-cols-12 items-center gap-3">
-          
-          {/* ================= LEFT ZONE (Cols 1-4): REFER & EARN + ADMIN RECORDS ================= */}
+    <header className="sticky top-0 z-40 bg-gradient-to-r from-[#040811]/95 via-[#07182d]/95 to-[#040811]/95 backdrop-blur-md border-b border-sky-400/25 text-white shadow-2xl shadow-black/50">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3">
+
+        {/* DESKTOP & TABLET: 3-ZONE GRID (LEFT: REFER & ADMIN | CENTER: LARGE LOGO & NAME | RIGHT: GET CARD) */}
+        <div className="hidden md:grid grid-cols-12 items-center gap-4">
+
+          {/* LEFT ZONE: Refer & Earn + Admin Records */}
           <div className="col-span-4 flex items-center justify-start gap-2.5">
             <button
               onClick={onOpenReferModal}
-              className="px-3.5 py-2 text-xs font-bold text-amber-300 hover:text-amber-100 bg-amber-950/70 hover:bg-amber-900/90 rounded-xl border border-amber-400/70 shadow-md flex items-center gap-1.5 transition-all cursor-pointer group active:scale-95"
+              className="px-3.5 py-2 text-xs font-semibold text-sky-200 hover:text-white bg-sky-500/15 hover:bg-sky-500/25 rounded-xl border border-sky-400/40 transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
               title="Refer & Earn Partner Program: Upto ₹200 per Card"
             >
-              <Share2 className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
-              <span className="whitespace-nowrap">Refer &amp; Earn (Upto ₹200)</span>
+              <Share2 className="w-3.5 h-3.5 text-sky-400" />
+              <span>Refer &amp; Earn (Upto ₹200)</span>
             </button>
 
             <button
               onClick={onOpenAdminModal}
-              className="px-3.5 py-2 text-xs font-bold text-slate-200 hover:text-white bg-slate-800/90 hover:bg-slate-700 rounded-xl border border-slate-700/80 shadow-md flex items-center gap-2 transition-all cursor-pointer active:scale-95"
+              className="px-3.5 py-2 text-xs font-semibold text-slate-200 hover:text-sky-200 bg-black/60 hover:bg-slate-900 rounded-xl border border-sky-400/20 hover:border-sky-400/40 transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
               title="Admin Login & Patient Records"
             >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span className="whitespace-nowrap">Admin Records</span>
+              <Lock className="w-3.5 h-3.5 text-sky-400" />
+              <span>Admin Records</span>
               {submissionCount > 0 && (
-                <span className="px-1.5 py-0.2 bg-amber-400 text-[#071324] text-[10px] font-black rounded-full">
-                  {submissionCount}
+                <span className="ml-0.5 text-[11px] font-mono font-bold text-sky-300 tabular-nums">
+                  ({submissionCount})
                 </span>
               )}
             </button>
           </div>
 
-          {/* ================= CENTER ZONE (Cols 5-8): PROMINENT LARGE LOGO + COMPANY NAME ================= */}
+          {/* CENTER ZONE: PROMINENT LARGE LOGO + COMPANY NAME */}
           <div className="col-span-4 flex items-center justify-center">
-            <a 
-              href="#home" 
-              className="flex items-center gap-3 sm:gap-4 group cursor-pointer text-center select-none"
+            <a
+              href="#home"
+              className="flex items-center gap-3.5 group cursor-pointer select-none"
               title="Global Care Link Services LLP"
             >
-              {/* Extra Large Premium Logo Container */}
-              <div className="w-20 md:w-24 h-20 md:h-24 rounded-2xl bg-gradient-to-br from-[#051329] via-[#092247] to-[#14376e] p-2 border-2 border-amber-400 shadow-xl shadow-amber-950/60 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:border-amber-300 shrink-0">
-                <CompanyLogo className="w-16 md:w-20 h-16 md:h-20" withGlow />
+              <div className="w-16 lg:w-20 h-16 lg:h-20 rounded-2xl bg-gradient-to-br from-sky-400/20 via-[#07182d] to-black p-1.5 border border-sky-400/60 shadow-lg shadow-sky-500/15 flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shrink-0">
+                <CompanyLogo className="w-full h-full" withGlow />
               </div>
 
-              {/* Centered Typography */}
               <div className="flex flex-col text-left">
-                <span className="text-xl sm:text-2xl xl:text-3xl font-black tracking-tight text-white group-hover:text-amber-300 transition-colors whitespace-nowrap font-display leading-tight drop-shadow-md">
+                <span className="text-xl lg:text-2xl xl:text-[26px] font-extrabold tracking-tight bg-gradient-to-r from-white via-sky-100 to-sky-300 bg-clip-text text-transparent whitespace-nowrap font-display leading-none">
                   GLOBAL CARE LINK
                 </span>
-                <span className="text-xs sm:text-sm font-extrabold tracking-[0.25em] text-amber-400 uppercase -mt-0.5">
+                <span className="text-[11px] lg:text-xs font-bold tracking-[0.26em] text-sky-400 uppercase mt-1">
                   SERVICES LLP
                 </span>
               </div>
             </a>
           </div>
 
-          {/* ================= RIGHT ZONE (Cols 9-12): GET CARD @ ₹599 + NAVIGATION MENU ================= */}
+          {/* RIGHT ZONE: Clean Nav + Primary CTA */}
           <div className="col-span-4 flex items-center justify-end gap-3">
-            <nav className="hidden xl:flex items-center gap-3 text-xs font-semibold text-slate-300 mr-1">
-              <a href="#services" className="hover:text-amber-400 transition-colors">Services</a>
-              <a href="#health-card" className="hover:text-amber-400 transition-colors">Card Demo</a>
-              <a href="#verify-card" className="hover:text-amber-400 transition-colors">Verify</a>
+            <nav className="hidden xl:flex items-center gap-4 text-xs font-semibold text-slate-300 mr-1">
+              <a href="#services" className="hover:text-sky-300 transition-colors whitespace-nowrap shrink-0">Services</a>
+              <a href="#health-card" className="hover:text-sky-300 transition-colors whitespace-nowrap shrink-0">Card</a>
+              <a href="#verify-card" className="hover:text-sky-300 transition-colors whitespace-nowrap shrink-0">Verify</a>
             </nav>
 
             <button
               onClick={onOpenApplyModal}
-              className="px-4 py-2.5 text-xs sm:text-sm font-black text-[#071933] bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-200 whitespace-nowrap cursor-pointer active:scale-95 flex items-center gap-1.5"
+              className="px-4 py-2.5 text-xs sm:text-sm font-extrabold text-[#030914] bg-gradient-to-r from-sky-300 via-sky-400 to-cyan-300 hover:from-sky-200 hover:to-sky-300 rounded-xl shadow-lg shadow-sky-500/25 transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer flex items-center gap-1.5"
             >
-              <CreditCard className="w-4 h-4 text-[#071933]" />
+              <CreditCard className="w-4 h-4 text-[#030914]" />
               <span>Get Card @ ₹599</span>
             </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-slate-300 hover:text-white rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-2 text-sky-200 hover:text-white rounded-xl hover:bg-sky-500/15 border border-transparent hover:border-sky-400/30 transition-colors cursor-pointer"
               aria-label="Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -124,66 +117,58 @@ export const Header: React.FC<HeaderProps> = ({
 
         </div>
 
-        {/* ================= MOBILE / COMPACT BAR (Below md screens) ================= */}
+        {/* MOBILE / COMPACT BAR */}
         <div className="flex md:hidden items-center justify-between gap-2">
-          
-          {/* Mobile Left: Refer & Admin Quick Buttons */}
+
           <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={onOpenReferModal}
-              className="px-2 py-1.5 text-[11px] font-bold text-amber-300 bg-amber-950/70 rounded-lg border border-amber-400/60 flex items-center gap-1 active:scale-95"
+              className="px-2 py-1.5 text-[11px] font-bold text-sky-200 bg-sky-500/15 rounded-lg border border-sky-400/40 flex items-center gap-1"
               title="Refer & Earn Upto ₹200"
             >
-              <Share2 className="w-3.5 h-3.5 text-amber-400" />
+              <Share2 className="w-3.5 h-3.5 text-sky-400" />
               <span>Refer</span>
             </button>
-            
+
             <button
               onClick={onOpenAdminModal}
-              className="px-2 py-1.5 text-[11px] font-semibold text-slate-200 bg-slate-800 rounded-lg border border-slate-700 flex items-center gap-1 active:scale-95"
+              className="px-2 py-1.5 text-[11px] font-semibold text-slate-200 bg-black/70 rounded-lg border border-sky-400/25 flex items-center gap-1"
               title="Admin Portal"
             >
-              <Lock className="w-3.5 h-3.5 text-amber-400" />
+              <Lock className="w-3.5 h-3.5 text-sky-400" />
               <span>Admin</span>
-              {submissionCount > 0 && (
-                <span className="px-1 py-0.2 bg-amber-400 text-slate-950 text-[9px] font-black rounded-full">
-                  {submissionCount}
-                </span>
-              )}
             </button>
           </div>
 
-          {/* Mobile Center: Logo + Name */}
-          <a 
-            href="#home" 
-            className="flex items-center gap-2 group cursor-pointer text-center mx-auto truncate"
+          <a
+            href="#home"
+            className="flex items-center gap-2 group cursor-pointer mx-auto min-w-0"
             title="Global Care Link Services LLP"
           >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#051329] to-[#123060] p-1 border-2 border-amber-400 shadow-md flex items-center justify-center shrink-0">
-              <CompanyLogo className="w-9 h-9" withGlow />
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-sky-400/20 to-black p-1 border border-sky-400/60 shadow-md flex items-center justify-center shrink-0">
+              <CompanyLogo className="w-full h-full" withGlow />
             </div>
-            <div className="flex flex-col text-left truncate">
-              <span className="text-xs sm:text-sm font-black tracking-tight text-white leading-tight truncate">
+            <div className="flex flex-col text-left min-w-0">
+              <span className="text-xs sm:text-sm font-extrabold tracking-tight text-white font-display leading-tight truncate">
                 GLOBAL CARE LINK
               </span>
-              <span className="text-[9px] sm:text-[10px] font-bold tracking-widest text-amber-400 uppercase">
+              <span className="text-[9px] font-bold tracking-[0.2em] text-sky-400 uppercase">
                 SERVICES LLP
               </span>
             </div>
           </a>
 
-          {/* Mobile Right: Get Card + Hamburger */}
           <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={onOpenApplyModal}
-              className="px-2 py-1.5 text-[11px] sm:text-xs font-black text-[#071933] bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-400 rounded-lg shadow-sm whitespace-nowrap flex items-center gap-1 active:scale-95"
+              className="px-2.5 py-1.5 text-[11px] font-extrabold text-[#030914] bg-gradient-to-r from-sky-300 to-sky-400 rounded-lg shadow-sm whitespace-nowrap flex items-center gap-1"
             >
               <CreditCard className="w-3.5 h-3.5" />
               <span>₹599</span>
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 text-slate-300 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+              className="p-1.5 text-sky-200 hover:text-white rounded-lg hover:bg-sky-500/15 transition-colors"
               aria-label="Toggle Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -193,34 +178,32 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Navigation Drawer (Opens for All Screen Sizes on Menu Click) */}
+      {/* Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="bg-[#07162c] border-b border-amber-900/40 px-4 sm:px-6 pt-4 pb-6 space-y-4 animate-in fade-in duration-150">
+        <div className="bg-[#040b16]/98 border-b border-sky-400/25 px-4 sm:px-6 pt-4 pb-6 space-y-4">
           <div className="max-w-7xl mx-auto">
-            {/* Quick Link Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 pb-3 border-b border-slate-700/60 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 pb-4 border-b border-sky-400/15 text-xs">
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="py-2 px-2.5 text-slate-200 hover:text-amber-400 hover:bg-slate-800/50 rounded-lg transition-colors font-medium text-center"
+                  className="py-2 px-2.5 text-slate-200 hover:text-sky-300 hover:bg-sky-500/10 rounded-lg transition-colors font-semibold text-center"
                 >
                   {link.label}
                 </a>
               ))}
             </div>
 
-            {/* Actions Inside Drawer */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   onOpenReferModal();
                 }}
-                className="py-3 px-4 text-center text-xs font-bold text-amber-300 bg-amber-950/60 border border-amber-500/40 rounded-xl flex items-center justify-center gap-2 hover:bg-amber-950/90 cursor-pointer"
+                className="py-3 px-4 text-center text-xs font-bold text-sky-200 bg-sky-500/15 border border-sky-400/40 rounded-xl flex items-center justify-center gap-2 hover:bg-sky-500/25 cursor-pointer"
               >
-                <Share2 className="w-4 h-4 text-amber-400" />
+                <Share2 className="w-4 h-4 text-sky-400" />
                 <span>Refer &amp; Earn Partner Program (Upto ₹200)</span>
               </button>
 
@@ -229,10 +212,10 @@ export const Header: React.FC<HeaderProps> = ({
                   setMobileMenuOpen(false);
                   onOpenAdminModal();
                 }}
-                className="py-3 px-4 text-center text-xs font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl flex items-center justify-center gap-2 cursor-pointer"
+                className="py-3 px-4 text-center text-xs font-bold text-slate-200 bg-black/70 hover:bg-slate-900 border border-sky-400/25 rounded-xl flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Lock className="w-4 h-4 text-amber-400" />
-                <span>Admin Login Gate (Survey &amp; Cards)</span>
+                <Lock className="w-4 h-4 text-sky-400" />
+                <span>Admin Portal (Survey &amp; Approvals)</span>
               </button>
 
               <button
@@ -240,7 +223,7 @@ export const Header: React.FC<HeaderProps> = ({
                   setMobileMenuOpen(false);
                   onOpenApplyModal();
                 }}
-                className="py-3 px-4 text-center text-xs font-black text-[#071933] bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                className="py-3 px-4 text-center text-xs font-extrabold text-[#030914] bg-gradient-to-r from-sky-300 to-sky-400 hover:from-sky-200 hover:to-sky-300 rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer"
               >
                 <CreditCard className="w-4 h-4" />
                 <span>Get Healthcare Card @ ₹599/Yr</span>

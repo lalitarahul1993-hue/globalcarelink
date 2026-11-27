@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  Printer, 
-  Check, 
-  Sparkles, 
-  Lock, 
-  Upload, 
-  RotateCcw, 
-  Download,
+import {
+  Printer,
+  Check,
+  Lock,
+  Upload,
+  RotateCcw,
   FileText
 } from 'lucide-react';
-import { COMPANY_CREDENTIALS } from '../data/servicesData';
 import { CardFormData } from '../types';
 import { CompanyLogo } from './CompanyLogo';
 import { OfficialCompanyCard } from './OfficialCompanyCard';
@@ -19,7 +16,7 @@ interface DigitalHealthCardProps {
   onOpenFullSurveyModal?: () => void;
 }
 
-export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({ 
+export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({
   onCardGenerated,
   onOpenFullSurveyModal
 }) => {
@@ -97,56 +94,55 @@ export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({
   };
 
   return (
-    <section id="health-card" className="py-20 bg-[#040e1d] text-white relative border-b border-slate-800 overflow-hidden">
-      {/* Background radial highlight */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[850px] bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+    <section
+      id="health-card"
+      className="py-20 bg-gradient-to-b from-[#03070e] via-[#09203d] to-[#03070e] text-white relative border-b border-sky-400/20 overflow-hidden"
+    >
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[360px] bg-sky-500/10 blur-3xl rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-        
-        {/* Section Header */}
+
+        {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold text-amber-300 bg-amber-950/60 px-3 py-1 rounded-md mb-3 border border-amber-800/60">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Official Company Healthcare Card</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
+          <p className="text-xs sm:text-sm font-semibold text-sky-400 mb-2">
+            Official Company Healthcare Card
+          </p>
+          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-white tracking-tight font-display">
             Official Customer Healthcare Card
           </h2>
           <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
-            The authentic, statutory annual healthcare facilitation card issued by <strong className="text-amber-400">GLOBAL CARE LINK SERVICES LLP</strong>. Complete with customer credentials, partner details, and all 12 facilitation services.
+            The authentic annual healthcare facilitation card issued by{' '}
+            <strong className="text-sky-300">GLOBAL CARE LINK SERVICES LLP</strong>. Complete with customer credentials, partner details, and all 12 facilitation services.
           </p>
         </div>
 
-        {/* TOP: FULL WIDTH OFFICIAL COMPANY CARD SHOWCASE */}
+        {/* TOP: OFFICIAL COMPANY CARD SHOWCASE */}
         <div className="mb-14">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4 max-w-4xl mx-auto">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-wider text-[#ffd966]">
-                Live Dynamic Card Preview (As Issued)
-              </span>
-            </div>
+            <span className="text-xs font-bold tracking-wider uppercase text-sky-300">
+              Live Dynamic Card Preview
+            </span>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={handleResetSample}
-                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-1.5 bg-black/70 hover:bg-sky-950 text-slate-200 text-xs font-semibold rounded-lg border border-sky-400/25 flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="w-3.5 h-3.5 text-sky-400" />
                 <span>Reset Demo</span>
               </button>
 
               <button
                 onClick={handleCopyCardNumber}
-                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 rounded-lg border border-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-1.5 bg-black/70 hover:bg-sky-950 text-xs font-semibold text-slate-200 rounded-lg border border-sky-400/25 flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                {copySuccess ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : null}
+                {copySuccess ? <Check className="w-3.5 h-3.5 text-sky-400" /> : null}
                 <span>{copySuccess ? 'Copied' : 'Copy Card ID'}</span>
               </button>
 
               <button
                 onClick={handlePrint}
-                className="px-4 py-1.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#071933] text-xs font-bold rounded-lg shadow-md flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-4 py-1.5 bg-gradient-to-r from-sky-300 to-sky-400 hover:from-sky-200 hover:to-sky-300 text-[#030914] text-xs font-extrabold rounded-lg shadow-md flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>Print Official Card</span>
@@ -154,7 +150,7 @@ export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({
             </div>
           </div>
 
-          {/* THE OFFICIAL CARD ITSELF */}
+          {/* THE OFFICIAL CARD */}
           <div className="max-w-4xl mx-auto flex justify-center">
             <OfficialCompanyCard
               id="printable-card"
@@ -165,70 +161,75 @@ export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({
                 dateOfIssue: issueDate,
                 validity: validityDate,
                 photoUrl: formData.photoUrl,
-                agentId: formData.referredByAgentId || 'gcl001'
+                agentId: formData.referredByAgentId || 'gcl001',
+                approvalStatus: isGenerated ? 'PENDING' : 'APPROVED'
               }}
             />
           </div>
 
           {isGenerated && (
-            <div className="mt-4 p-3 bg-emerald-950/60 border border-emerald-700/60 rounded-xl text-xs text-emerald-200 max-w-4xl mx-auto text-center animate-in fade-in duration-300">
-              <span className="font-bold block">✓ Card Successfully Generated with Your Details!</span>
-              <span>Your Official Card ID is <strong>{cardNumber}</strong> (Agent ID: <strong>{formData.referredByAgentId || 'gcl001'}</strong>). You can verify it below in the Verification registry.</span>
+            <div className="mt-4 p-3.5 bg-sky-950/70 border border-sky-400/40 rounded-xl text-xs text-sky-100 max-w-4xl mx-auto text-center">
+              <span className="font-bold block text-sky-300">✓ Card Successfully Generated with Your Details</span>
+              <span>
+                Your Official Card ID is <strong className="font-mono text-white">{cardNumber}</strong>. You can verify it below in the Verification registry.
+              </span>
             </div>
           )}
         </div>
 
-        {/* BOTTOM: INTERACTIVE FORM TO PERSONALIZE / APPLY FOR THE OFFICIAL CARD */}
-        <div className="max-w-4xl mx-auto bg-slate-900/90 border border-[#d4af37]/40 rounded-2xl p-6 sm:p-8 shadow-xl">
-          
-          {/* Banner to launch the full official Patient Assistance & Health Survey Form */}
+        {/* INTERACTIVE FORM TO PERSONALIZE / APPLY */}
+        <div className="max-w-4xl mx-auto sky-black-card rounded-2xl p-6 sm:p-8 shadow-2xl">
+
           {onOpenFullSurveyModal && (
-            <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-[#071933] to-amber-950/40 border border-[#d4af37]/60 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+            <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-sky-500/15 via-[#071a33] to-black/80 border border-sky-400/40 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-[#d4af37] text-[#071933] flex items-center justify-center shrink-0 shadow-md">
-                  <FileText className="w-6 h-6 stroke-[2.5]" />
+                <div className="w-11 h-11 rounded-xl bg-sky-400 text-[#030914] flex items-center justify-center shrink-0">
+                  <FileText className="w-6 h-6 stroke-[2.2]" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">Official 6-Section PDF Document</span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">Mandatory for Full Benefits</span>
-                  </div>
-                  <h4 className="text-base sm:text-lg font-black text-white mt-0.5">Patient Assistance & Health Survey Form</h4>
-                  <p className="text-xs text-slate-300">Complete medical history, preferred 5 hospitals, insurance, emergency contacts & ₹599 card payment.</p>
+                  <span className="text-xs font-mono font-semibold text-sky-300 block">
+                    Official 6-Section Form · Required for Full Benefits
+                  </span>
+                  <h4 className="text-base sm:text-lg font-extrabold text-white mt-0.5 font-display">
+                    Patient Assistance &amp; Health Survey Form
+                  </h4>
+                  <p className="text-xs text-slate-300">
+                    Complete medical history, preferred 5 hospitals, insurance, emergency contacts &amp; ₹599 card enrollment.
+                  </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={onOpenFullSurveyModal}
-                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#ffd966] via-amber-400 to-[#d4af37] text-[#071933] font-black text-xs sm:text-sm rounded-xl hover:from-amber-300 hover:to-[#ffd966] transition-all shrink-0 cursor-pointer shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-sky-300 via-sky-400 to-cyan-300 text-[#030914] font-extrabold text-xs sm:text-sm rounded-xl hover:from-sky-200 hover:to-sky-300 transition-all shrink-0 cursor-pointer shadow-lg shadow-sky-500/20"
               >
-                <span>Fill Survey Form & Pay ₹599</span>
+                Fill Survey Form &amp; Pay ₹599
               </button>
             </div>
           )}
 
           <div className="mb-6 flex items-start justify-between gap-4">
             <div>
-              <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider block mb-1">
-                Quick Preview & Issue Card
+              <span className="text-xs font-semibold text-sky-400 block mb-1">
+                Quick Preview &amp; Issue Card
               </span>
               <h3 className="text-xl sm:text-2xl font-bold text-white font-display">
                 Apply for Your Official Customer Card
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 mt-1">
-                Enter your details to generate your official card above in real time.
+                Enter your details to preview and generate your official card above in real time.
               </p>
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-[#061833] border border-[#d4af37]/60 p-2 shrink-0 flex items-center justify-center shadow-md">
-              <CompanyLogo className="w-10 h-10" withGlow />
+            <div className="w-14 h-14 rounded-2xl bg-black/60 border border-sky-400/40 p-1.5 shrink-0 flex items-center justify-center">
+              <CompanyLogo className="w-full h-full" withGlow />
             </div>
           </div>
 
           <form onSubmit={handleGenerateSubmit} className="space-y-4 text-xs sm:text-sm">
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-slate-300 font-semibold mb-1 text-xs">
+                <label className="block text-sky-200 font-semibold mb-1.5 text-xs">
                   Customer Full Name *
                 </label>
                 <input
@@ -238,12 +239,12 @@ export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({
                   value={formData.fullName}
                   onChange={handleInputChange}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full px-3.5 py-2.5 bg-[#061833] border border-slate-700 focus:border-[#d4af37] rounded-xl text-white placeholder-slate-500 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 bg-black/70 border border-sky-400/25 focus:border-sky-400 rounded-xl text-white placeholder-slate-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1 text-xs">
+                <label className="block text-sky-200 font-semibold mb-1.5 text-xs">
                   Customer Mobile Number *
                 </label>
                 <input
@@ -253,14 +254,14 @@ export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({
                   value={formData.mobile}
                   onChange={handleInputChange}
                   placeholder="+91 7290835403"
-                  className="w-full px-3.5 py-2.5 bg-[#061833] border border-slate-700 focus:border-[#d4af37] rounded-xl text-white placeholder-slate-500 focus:outline-none font-mono"
+                  className="w-full px-3.5 py-2.5 bg-black/70 border border-sky-400/25 focus:border-sky-400 rounded-xl text-white placeholder-slate-500 focus:outline-none font-mono"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-slate-300 font-semibold mb-1 text-xs">
+                <label className="block text-sky-200 font-semibold mb-1.5 text-xs">
                   Date of Birth *
                 </label>
                 <input
@@ -269,19 +270,19 @@ export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({
                   required
                   value={formData.dob}
                   onChange={handleInputChange}
-                  className="w-full px-3.5 py-2.5 bg-[#061833] border border-slate-700 focus:border-[#d4af37] rounded-xl text-white focus:outline-none"
+                  className="w-full px-3.5 py-2.5 bg-black/70 border border-sky-400/25 focus:border-sky-400 rounded-xl text-white focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1 text-xs">
+                <label className="block text-sky-200 font-semibold mb-1.5 text-xs">
                   Gender *
                 </label>
                 <select
                   name="gender"
                   value={formData.gender}
                   onChange={handleInputChange}
-                  className="w-full px-3.5 py-2.5 bg-[#061833] border border-slate-700 focus:border-[#d4af37] rounded-xl text-white focus:outline-none"
+                  className="w-full px-3.5 py-2.5 bg-[#040a14] border border-sky-400/25 focus:border-sky-400 rounded-xl text-white focus:outline-none"
                 >
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -290,14 +291,14 @@ export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1 text-xs">
+                <label className="block text-sky-200 font-semibold mb-1.5 text-xs">
                   Upload Photo (35x40 mm)
                 </label>
-                <label className="w-full px-3.5 py-2.5 bg-[#061833] border border-slate-700 hover:border-[#d4af37] rounded-xl text-slate-300 flex items-center justify-between cursor-pointer transition-colors">
+                <label className="w-full px-3.5 py-2.5 bg-black/70 border border-sky-400/25 hover:border-sky-400 rounded-xl text-slate-200 flex items-center justify-between cursor-pointer transition-colors">
                   <span className="truncate text-xs">
                     {formData.photoUrl ? 'Photo Uploaded ✓' : 'Choose Photo...'}
                   </span>
-                  <Upload className="w-4 h-4 text-[#ffd966] shrink-0 ml-2" />
+                  <Upload className="w-4 h-4 text-sky-400 shrink-0 ml-2" />
                   <input
                     type="file"
                     accept="image/*"
@@ -309,7 +310,7 @@ export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({
             </div>
 
             <div>
-              <label className="block text-slate-300 font-semibold mb-1 text-xs">
+              <label className="block text-sky-200 font-semibold mb-1.5 text-xs">
                 Preferred Area / Location in Delhi NCR *
               </label>
               <input
@@ -319,30 +320,30 @@ export const DigitalHealthCard: React.FC<DigitalHealthCardProps> = ({
                 value={formData.preferredLocation}
                 onChange={handleInputChange}
                 placeholder="e.g. Harsh Vihar, North East Delhi - 110093"
-                className="w-full px-3.5 py-2.5 bg-[#061833] border border-slate-700 focus:border-[#d4af37] rounded-xl text-white placeholder-slate-500 focus:outline-none"
+                className="w-full px-3.5 py-2.5 bg-black/70 border border-sky-400/25 focus:border-sky-400 rounded-xl text-white placeholder-slate-500 focus:outline-none"
               />
             </div>
 
-            <div className="p-3.5 bg-[#061833] rounded-xl border border-[#d4af37]/40 flex items-center justify-between text-xs">
+            <div className="p-4 bg-black/60 rounded-xl border border-sky-400/25 flex items-center justify-between text-xs">
               <div>
-                <span className="text-slate-400 block font-medium">Annual Facilitation Fee:</span>
-                <span className="text-lg font-black text-[#ffd966]">₹599 / Year</span>
+                <span className="text-slate-400 block font-medium">Annual Facilitation Fee</span>
+                <span className="text-xl font-extrabold text-sky-300 font-display tabular-nums">₹599 / Year</span>
               </div>
-              <span className="text-[11px] text-[#ffd966] font-mono bg-[#092247] px-3 py-1 rounded border border-[#d4af37]/40">
+              <span className="text-xs text-sky-200 font-mono">
                 12 Services Included (MOU)
               </span>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-gradient-to-r from-[#ffd966] via-[#f3c64a] to-[#d4af37] hover:from-[#f3c64a] hover:to-[#ffd966] text-[#071933] font-black text-sm rounded-xl transition-all shadow-lg shadow-amber-500/20 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-gradient-to-r from-sky-300 via-sky-400 to-cyan-300 hover:from-sky-200 hover:to-sky-300 text-[#030914] font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-sky-500/25 cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>Generate Official Card & Complete Enrollment</span>
+              <span>Generate Official Card &amp; Complete Enrollment</span>
             </button>
 
-            <p className="text-[11px] text-slate-400 text-center flex items-center justify-center gap-1.5 pt-1">
-              <Lock className="w-3 h-3 text-[#ffd966]" />
-              <span>Capped Liability: ₹599. Legal Jurisdiction: Delhi Only. Emergency: 102/112.</span>
+            <p className="text-xs text-slate-400 text-center flex items-center justify-center gap-1.5 pt-1">
+              <Lock className="w-3.5 h-3.5 text-sky-400" />
+              <span>Capped Liability: ₹599 · Legal Jurisdiction: Delhi Only · Emergency: 102/112</span>
             </p>
 
           </form>

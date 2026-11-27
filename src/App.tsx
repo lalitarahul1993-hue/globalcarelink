@@ -74,7 +74,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-slate-800">
+    <div className="min-h-screen flex flex-col bg-[#050a12] text-slate-100">
       
       {/* 1 & 2. Top Announcement Bar & Sticky Header */}
       <Header

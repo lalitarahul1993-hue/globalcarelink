@@ -1,203 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
   <defs>
-    <!-- Metallic Gold Gradient 1 -->
-    <linearGradient id="goldGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fff0a8" />
-      <stop offset="30%" stop-color="#e6b944" />
-      <stop offset="70%" stop-color="#c99723" />
-      <stop offset="100%" stop-color="#8d6512" />
+    <linearGradient id="gcl-gold1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff4b8" />
+      <stop offset="35%" stop-color="#f2c44c" />
+      <stop offset="72%" stop-color="#c9931b" />
+      <stop offset="100%" stop-color="#825b0b" />
     </linearGradient>
-
-    <!-- Metallic Gold Gradient 2 (Hands & Highlights) -->
-    <linearGradient id="goldGrad2" x1="20%" y1="0%" x2="80%" y2="100%">
-      <stop offset="0%" stop-color="#ffeb99" />
-      <stop offset="25%" stop-color="#f3c64a" />
-      <stop offset="60%" stop-color="#d4a024" />
-      <stop offset="90%" stop-color="#9d7112" />
-      <stop offset="100%" stop-color="#6e4d07" />
+    <linearGradient id="gcl-gold2" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#fff1a6" />
+      <stop offset="28%" stop-color="#f5c644" />
+      <stop offset="62%" stop-color="#d1991c" />
+      <stop offset="88%" stop-color="#94670e" />
+      <stop offset="100%" stop-color="#634205" />
     </linearGradient>
-
-    <!-- Deep Royal Navy Blue Gradient for Arrows & Oceans -->
-    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2d6cb5" />
-      <stop offset="40%" stop-color="#164684" />
-      <stop offset="80%" stop-color="#0a254f" />
-      <stop offset="100%" stop-color="#051531" />
-    </linearGradient>
-
-    <!-- Ocean Spherical Radial Gradient -->
-    <radialGradient id="oceanSphere" cx="38%" cy="32%" r="68%">
-      <stop offset="0%" stop-color="#235c9e" />
-      <stop offset="45%" stop-color="#133d73" />
-      <stop offset="80%" stop-color="#0b2447" />
-      <stop offset="100%" stop-color="#051226" />
+    <radialGradient id="gcl-gglobe" cx="42%" cy="34%" r="65%">
+      <stop offset="0%" stop-color="#fff8d4" />
+      <stop offset="40%" stop-color="#f5cd63" />
+      <stop offset="75%" stop-color="#cf9621" />
+      <stop offset="100%" stop-color="#855b0b" />
     </radialGradient>
-
-    <!-- 3D Specular Highlight on Sphere -->
-    <radialGradient id="sphereLight" cx="35%" cy="30%" r="60%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45" />
-      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.1" />
-      <stop offset="70%" stop-color="#000000" stop-opacity="0" />
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.4" />
-    </radialGradient>
-
-    <!-- Subtle Drop Shadow -->
-    <filter id="subtleShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.25" />
-    </filter>
+    <linearGradient id="gcl-barrow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="35%" stop-color="#0284c7" />
+      <stop offset="78%" stop-color="#0b4a8f" />
+      <stop offset="100%" stop-color="#062754" />
+    </linearGradient>
+    <linearGradient id="gcl-bland" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f5ea8" />
+      <stop offset="55%" stop-color="#083d78" />
+      <stop offset="100%" stop-color="#04244d" />
+    </linearGradient>
+    <clipPath id="gcl-clip">
+      <circle cx="250" cy="236" r="102" />
+    </clipPath>
   </defs>
-
-  <!-- Group for Logo -->
-  <g id="company-logo-emblem" filter="url(#subtleShadow)">
-    
-    <!-- 1. ORBITAL TRACKS & CONCENTRIC ACCENTS -->
-    <!-- Outer thin gold orbital circle -->
-    <circle cx="250" cy="245" r="215" fill="none" stroke="url(#goldGrad1)" stroke-width="2.5" opacity="0.85" stroke-dasharray="140 20 80 15 200 30" />
-    <!-- Outer thin blue orbital counter-arc with arrow -->
-    <circle cx="250" cy="245" r="228" fill="none" stroke="#1b4982" stroke-width="2.8" opacity="0.9" stroke-dasharray="90 35 180 50" />
-    
-    <!-- Upward arrow on left blue arc -->
-    <path d="M 80 285 L 72 295 L 88 295 Z" fill="#1b4982" transform="rotate(-15 80 290)" />
-    
-    <!-- Bottom small blue directional arrow -->
-    <path d="M 240 435 L 250 431 L 250 439 Z" fill="#1b4982" />
-
-    <!-- 2. UPPER GOLD CURVED ARROW (Swooping clockwise from mid-left to top-center) -->
-    <!-- Ribbon body -->
-    <path d="M 100 230 C 95 150, 160 85, 275 80 L 277 115 C 190 120, 135 165, 138 230 Z" 
-          fill="url(#goldGrad1)" />
-    <!-- Gold Arrowhead at top-right -->
-    <polygon points="270,60 325,100 270,135 280,100" fill="url(#goldGrad1)" />
-
-    <!-- 3. RIGHT BLUE CURVED ARROW (Swooping clockwise from top-right to right-bottom) -->
-    <!-- Ribbon body -->
-    <path d="M 330 120 C 375 145, 405 190, 408 245 L 375 250 C 372 205, 348 170, 312 148 Z" 
-          fill="url(#blueGrad)" />
-    <!-- Blue Arrowhead pointing down on right -->
-    <polygon points="418,225 400,285 365,232 393,242" fill="url(#blueGrad)" />
-
-    <!-- 4. CENTRAL 3D GLOBE (Diameter ~ 190, Center: 250, 240) -->
-    <g id="central-globe">
-      <!-- Ocean Base Sphere -->
-      <circle cx="250" cy="240" r="96" fill="url(#oceanSphere)" stroke="#091e3d" stroke-width="2" />
-
-      <!-- Golden Continents Landmasses -->
-      <!-- Americas (North & South) -->
-      <path d="M 185 185 
-               C 180 190, 190 205, 195 210 
-               C 200 215, 205 220, 212 215 
-               C 218 210, 225 212, 222 225 
-               C 220 235, 228 250, 235 260 
-               C 242 270, 240 285, 232 295 
-               C 225 305, 215 315, 218 322 
-               C 222 325, 228 320, 230 310 
-               C 235 295, 245 285, 248 270 
-               C 252 255, 242 245, 235 235 
-               C 228 225, 225 215, 215 205 
-               C 205 195, 195 180, 185 185 Z" 
-            fill="url(#goldGrad2)" opacity="0.95" />
-
-      <!-- North America Details (Canada / USA / Greenland) -->
-      <path d="M 195 160 
-               C 205 155, 220 152, 230 162 
-               C 240 172, 235 180, 225 185 
-               C 215 190, 202 185, 195 175 
-               C 190 168, 188 162, 195 160 Z" 
-            fill="url(#goldGrad2)" opacity="0.95" />
-
-      <!-- Greenland / Arctic islands -->
-      <path d="M 235 150 C 242 148, 255 152, 250 160 C 245 168, 232 165, 235 150 Z" 
-            fill="url(#goldGrad2)" opacity="0.95" />
-
-      <!-- Europe & Mediterranean -->
-      <path d="M 265 162 
-               C 275 158, 290 165, 295 175 
-               C 300 185, 290 192, 280 190 
-               C 270 188, 262 178, 265 162 Z" 
-            fill="url(#goldGrad2)" opacity="0.95" />
-
-      <!-- Africa -->
-      <path d="M 268 198 
-               C 285 195, 305 205, 310 220 
-               C 315 235, 312 255, 300 270 
-               C 290 285, 285 295, 275 300 
-               C 268 302, 265 295, 268 285 
-               C 272 275, 265 260, 260 250 
-               C 255 240, 258 225, 262 215 
-               C 265 205, 262 200, 268 198 Z" 
-            fill="url(#goldGrad2)" opacity="0.95" />
-
-      <!-- Asia & Middle East -->
-      <path d="M 305 168 
-               C 320 165, 338 180, 342 200 
-               C 345 220, 335 230, 325 225 
-               C 315 220, 318 205, 310 195 
-               C 305 185, 300 175, 305 168 Z" 
-            fill="url(#goldGrad2)" opacity="0.95" />
-
-      <!-- 3D Globe Light & Specular Sphere Overlay -->
-      <circle cx="250" cy="240" r="96" fill="url(#sphereLight)" pointer-events="none" />
-    </g>
-
-    <!-- 5. PAIR OF SUPPORTIVE GOLDEN HANDS (Cradling the globe from underneath) -->
-    
-    <!-- LEFT HAND & FINGERS -->
-    <g id="left-hand">
-      <!-- Palm & Forearm Base -->
-      <path d="M 195 425 
-               C 185 390, 160 355, 145 325 
-               C 135 305, 120 280, 108 248 
-               C 104 240, 108 235, 115 238 
-               C 125 245, 138 275, 148 295 
-               C 142 270, 130 250, 122 230 
-               C 119 222, 124 218, 130 220 
-               C 140 230, 155 265, 162 290 
-               C 158 265, 148 240, 140 220 
-               C 137 212, 142 208, 148 210 
-               C 158 220, 172 260, 178 285 
-               C 176 265, 168 242, 162 225 
-               C 160 218, 165 214, 170 216 
-               C 182 228, 195 270, 202 305 
-               C 210 335, 230 365, 245 390 
-               C 230 415, 215 428, 195 425 Z" 
-            fill="url(#goldGrad2)" stroke="#9c7112" stroke-width="1.5" />
-      
-      <!-- Left Hand Palm Contour Shadow -->
-      <path d="M 155 340 C 170 365, 195 385, 220 400" 
-            fill="none" stroke="#6e4d07" stroke-width="3" opacity="0.45" stroke-linecap="round" />
-      <!-- Left Thumb Accent -->
-      <path d="M 188 320 C 198 335, 208 348, 212 360" 
-            fill="none" stroke="#fff0a8" stroke-width="2.5" opacity="0.65" stroke-linecap="round" />
-    </g>
-
-    <!-- RIGHT HAND & FINGERS -->
-    <g id="right-hand">
-      <!-- Palm & Forearm Base -->
-      <path d="M 305 425 
-               C 315 390, 340 355, 355 325 
-               C 365 305, 380 280, 392 248 
-               C 396 240, 392 235, 385 238 
-               C 375 245, 362 275, 352 295 
-               C 358 270, 370 250, 378 230 
-               C 381 222, 376 218, 370 220 
-               C 360 230, 345 265, 338 290 
-               C 342 265, 352 240, 360 220 
-               C 363 212, 358 208, 352 210 
-               C 342 220, 328 260, 322 285 
-               C 324 265, 332 242, 338 225 
-               C 340 218, 335 214, 330 216 
-               C 318 228, 305 270, 298 305 
-               C 290 335, 270 365, 255 390 
-               C 270 415, 285 428, 305 425 Z" 
-            fill="url(#goldGrad2)" stroke="#9c7112" stroke-width="1.5" />
-      
-      <!-- Right Hand Palm Contour Shadow -->
-      <path d="M 345 340 C 330 365, 305 385, 280 400" 
-            fill="none" stroke="#6e4d07" stroke-width="3" opacity="0.45" stroke-linecap="round" />
-      <!-- Right Thumb Accent -->
-      <path d="M 312 320 C 302 335, 292 348, 288 360" 
-            fill="none" stroke="#fff0a8" stroke-width="2.5" opacity="0.65" stroke-linecap="round" />
-    </g>
-
+  <circle cx="250" cy="250" r="245" fill="#ffffff" />
+  <path d="M 170 434 A 210 210 0 0 1 282 40" fill="none" stroke="url(#gcl-barrow)" stroke-width="4.5" stroke-linecap="round" />
+  <path d="M 332 58 A 210 210 0 0 1 430 162" fill="none" stroke="url(#gcl-barrow)" stroke-width="4" stroke-linecap="round" />
+  <path d="M 448 238 A 210 210 0 0 1 334 434" fill="none" stroke="url(#gcl-gold1)" stroke-width="4" stroke-linecap="round" />
+  <path d="M 166 434 A 210 210 0 0 1 54 275" fill="none" stroke="url(#gcl-gold1)" stroke-width="4" stroke-linecap="round" />
+  <path d="M 76 226 C 72 132, 152 62, 286 58 L 288 94 C 188 98, 120 150, 114 226 C 102 214, 88 214, 76 226 Z" fill="url(#gcl-gold1)" stroke="#825b0b" stroke-width="2" />
+  <polygon points="278,38 336,84 276,118 289,80" fill="url(#gcl-gold1)" stroke="#825b0b" stroke-width="2" />
+  <path d="M 342 104 C 388 130, 418 176, 424 232 L 388 236 C 384 190, 358 154, 318 132 C 332 126, 338 118, 342 104 Z" fill="url(#gcl-barrow)" stroke="#062754" stroke-width="2" />
+  <polygon points="440,174 416,244 366,204 404,208" fill="url(#gcl-barrow)" stroke="#062754" stroke-width="2" />
+  <circle cx="250" cy="236" r="102" fill="url(#gcl-gglobe)" stroke="#855b0b" stroke-width="2.2" />
+  <g clip-path="url(#gcl-clip)">
+    <path d="M 222 138 C 236 136, 256 142, 254 156 C 250 172, 234 178, 224 166 C 218 156, 214 142, 222 138 Z" fill="url(#gcl-bland)" />
+    <path d="M 142 170 C 160 156, 194 148, 212 162 C 224 172, 216 190, 200 198 C 186 206, 174 222, 184 238 C 176 248, 162 240, 152 222 C 142 204, 134 184, 142 170 Z" fill="url(#gcl-bland)" />
+    <path d="M 186 246 C 204 244, 226 260, 232 276 C 238 294, 220 326, 204 338 C 194 342, 190 328, 192 310 C 192 292, 178 272, 180 256 Z" fill="url(#gcl-bland)" />
+    <path d="M 278 152 C 296 146, 326 154, 338 174 C 344 186, 330 200, 314 198 C 296 196, 282 188, 276 174 C 272 164, 272 156, 278 152 Z" fill="url(#gcl-bland)" />
+    <path d="M 272 206 C 294 200, 324 206, 344 224 C 354 236, 346 268, 332 288 C 318 308, 304 322, 294 316 C 284 308, 286 286, 282 268 C 276 254, 260 242, 262 224 C 264 214, 266 208, 272 206 Z" fill="url(#gcl-bland)" />
+    <path d="M 332 186 C 348 182, 362 198, 358 222 C 354 240, 342 246, 336 232 C 330 218, 326 196, 332 186 Z" fill="url(#gcl-bland)" />
   </g>
+  <path d="M 192 444 C 184 406, 152 372, 130 340 C 110 310, 92 276, 84 240 C 82 230, 88 224, 96 228 C 106 236, 114 268, 124 294 C 118 266, 108 242, 102 222 C 100 214, 107 210, 114 214 C 124 226, 136 264, 144 292 C 142 266, 134 244, 130 226 C 128 218, 135 215, 141 220 C 152 234, 162 274, 168 304 C 176 334, 206 364, 236 392 C 242 406, 240 434, 232 448 C 216 450, 202 448, 192 444 Z" fill="url(#gcl-gold2)" stroke="#785208" stroke-width="2" />
+  <path d="M 308 444 C 316 406, 348 372, 370 340 C 390 310, 408 276, 416 240 C 418 230, 412 224, 404 228 C 394 236, 386 268, 376 294 C 382 266, 392 242, 398 222 C 400 214, 393 210, 386 214 C 376 226, 364 264, 356 292 C 358 266, 366 244, 370 226 C 372 218, 365 215, 359 220 C 348 234, 338 274, 332 304 C 324 334, 294 364, 264 392 C 258 406, 260 434, 268 448 C 284 450, 298 448, 308 444 Z" fill="url(#gcl-gold2)" stroke="#785208" stroke-width="2" />
 </svg>

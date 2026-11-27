@@ -1,12 +1,47 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: 'Manrope', system-ui, -apple-system, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Manrope', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
 @layer base {
+  html {
+    background-color: #050a12;
+    color: #f1f5f9;
+  }
+
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(ellipse 85% 50% at 50% -10%, rgba(56, 189, 248, 0.22), transparent 62%),
+      radial-gradient(ellipse 65% 45% at 100% 30%, rgba(14, 165, 233, 0.12), transparent 60%),
+      linear-gradient(180deg, #04080f 0%, #071322 50%, #04070d 100%);
+    background-attachment: fixed;
+    color: #f1f5f9;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
   h1, h2, h3, h4, .font-display {
-    font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: 'Bricolage Grotesque', 'Manrope', system-ui, sans-serif;
+    text-wrap: balance;
   }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.sky-black-surface {
+  background: linear-gradient(145deg, rgba(10, 25, 47, 0.88) 0%, rgba(5, 10, 18, 0.94) 100%);
+}
+
+.sky-black-card {
+  background: linear-gradient(160deg, rgba(12, 32, 58, 0.72) 0%, rgba(6, 12, 22, 0.92) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.22);
 }
 
 .perspective-1000 {
@@ -23,7 +58,27 @@
   transform: rotateY(180deg);
 }
 
+/* Custom sleek sky-blue & black scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050a12;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e3a5f;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}
+
 @media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
   body * {
     visibility: hidden;
   }
